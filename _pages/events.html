@@ -1,0 +1,81 @@
+---
+layout: default
+permalink: /events/
+title: "📅 Расписание ближайших мероприятий"
+description: "Расписание предстоящих мероприятий с возможностью регистрации"
+published: true
+---
+<h2>📅 Расписание ближайших мероприятий</h2>
+
+<div>
+  {% assign now = site.time | date: '%s' %}
+  
+  {% assign current_month = '' %}
+  {% assign current_year = '' %}
+  
+  {% for event in site.data.events %}
+    {% assign datetime_parts = event.datetime | split: ' ' %}
+    {% assign date_parts = datetime_parts[0] | split: '.' %}
+    {% assign time_parts = datetime_parts[1] | split: ':' %}
+
+    {% assign year = date_parts[2] %}
+    {% assign month = date_parts[1] %}
+    {% assign day = date_parts[0] %}
+    {% assign hour = time_parts[0] %}
+    {% assign minute = time_parts[1] %}
+
+    {% assign formatted_datetime = year | append: '-' | append: month | append: '-' | append: day | append: ' ' | append: hour | append: ':' | append: minute | append: ' +0300' %}
+    {% assign event_time = formatted_datetime | date: '%s' %}
+    
+    {% if event_time >= now %}
+      {% if month != current_month or year != current_year %}
+        <h3><small>
+          {% case month %}
+            {% when '01' %}⛄ Январь
+            {% when '02' %}❄ Февраль
+            {% when '03' %}🌱 Март
+            {% when '04' %}🍀 Апрель
+            {% when '05' %}🌺 Май
+            {% when '06' %}🌳 Июнь
+            {% when '07' %}🌞 Июль
+            {% when '08' %}🌾 Август
+            {% when '09' %}🍂 Сентябрь
+            {% when '10' %}🍄 Октябрь
+            {% when '11' %}🍁 Ноябрь
+            {% when '12' %}🎄 Декабрь
+          {% endcase %}
+          {{ year }}
+
+        </small></h3>
+        {% assign current_month = month %}
+        {% assign current_year = year %}
+      {% endif %}
+      
+      <a href="{{ event.url }}">🌆 {{ day }}.{{ month }} в ⌚ {{ hour }}:{{ minute }} _ {{ event.name }}</a><br>
+    {% endif %}
+  {% endfor %}
+</div>
+
+{{/*  ⛄ Январь
+
+❄ Февраль
+
+🌱 Март
+
+🍀 Апрель
+
+🌺 Май
+
+🌳 Июнь
+
+🌞 Июль
+
+🌾 Август
+
+🍂 Сентябрь
+
+🍄 Октябрь
+
+🍁 Ноябрь
+
+🎄 Декабрь  */}}
