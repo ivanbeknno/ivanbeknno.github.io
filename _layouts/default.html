@@ -9,6 +9,16 @@ layout: null
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1" name="viewport">
 
+        {% if page.url == "/events/" %}
+          <!--Или {% if page.url == "/events/" or page.url == "/другая-страница/" %} -->
+          <!-- Все полезные мета-теги против кэширования -->
+          <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate, max-age=0, private, post-check=0, pre-check=0">
+          <meta http-equiv="pragma" content="no-cache">
+          <meta http-equiv="expires" content="-1">
+          <meta http-equiv="surrogate-control" content="no-store">
+          <meta http-equiv="cache-directive" content="no-cache">
+        {% endif %}
+
         {% seo %}
 
         <meta property="og:image" content="{{site.url}}/assets/images/profile.jpg">
