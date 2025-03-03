@@ -129,8 +129,9 @@ $(function() {
           .append($leftSmall)
           .append($rightSmall);
 
-      // Вставляем дату перед hr
-      $post.find('hr').before($dateContainer);
+      // Заменяем hr на дату ($dateContainer) и три <br>
+      $post.find('hr').replaceWith($dateContainer);
+      $dateContainer.after('<br><br><br>');
 
       // Добавляем пост на страницу
       $post.appendTo(".tag-master:not(.hidden) .post-list");
