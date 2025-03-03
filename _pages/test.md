@@ -19,14 +19,6 @@ sitemap:
 - 🎭 Попробовать моего телеграм бота: [@IB_Empathy_bot](https://t.me/IB_Empathy_bot)
 - 📞 Написать мне -- Telegram: <a href="https://t.me/IvanBekNNO" target="_blank" rel="noopener noreferrer">@IvanBekNNO</a>, <span style="white-space: nowrap">✉ Email: ivanbeknno@gmail.com</span>
 
-<!-- Вы можете:
-- Прийти на [одно из моих мероприятий 🌆](/events)
-- Записаться на [личную консультацию ✨](/sign/)
-- Почитать [мой блог 📖](/blog/)
-- Подписаться на мой телеграм канал 📱: [@IvanBekRu](https://t.me/IvanBekRu)
-- Попробовать моего телеграм бота 🎭: [@IB_Empathy_bot](https://t.me/IB_Empathy_bot)
-- 📞 Написать мне -- Telegram: <a href="https://t.me/IvanBekNNO" target="_blank" rel="noopener noreferrer">@IvanBekNNO</a>, <span style="white-space: nowrap">✉ Email: ivanbeknno@gmail.com</span>  -->
-
 <a id="consult"></a>
 
 ## ✨ Личные консультации
