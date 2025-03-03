@@ -17,8 +17,8 @@ markdown: kramdown
 
 # Pagination
 paginate: 20
-permalink: /blog/:year/:month/:title/
-paginate_path: /blog/:num/
+permalink: /blog-p/:year/:month/:title/
+paginate_path: /blog-p/:num/
 
 # Social media links in footer
 facebook: #
