@@ -15,8 +15,8 @@ description: "Построить искренние и близкие отнош
 - ✨ Записаться на [личную консультацию ](#consult)
 - 🌆 Прийти на [одно из моих мероприятий](#events)
 - 📖 Почитать [мой блог](/blog/)
-- 📱 Подписаться на мой телеграм канал: [@IvanBekRu](https://t.me/IvanBekRu)
-- 🎭 Попробовать моего телеграм бота: [@IB_Empathy_bot](https://t.me/IB_Empathy_bot)
+- 📱 Подписаться на мой телеграм канал: [@IvanBekRu](https://t.me/IvanBekRu){:target="_blank" rel="noopener noreferrer"}
+- 🎭 Попробовать моего телеграм бота: [@IB_Empathy_bot](https://t.me/IB_Empathy_bot){:target="_blank" rel="noopener noreferrer"}
 - 📞 Написать мне -- Telegram: <a href="https://t.me/IvanBekNNO" target="_blank" rel="noopener noreferrer">@IvanBekNNO</a>, <span style="white-space: nowrap">✉ Email: ivanbeknno@gmail.com</span>
 
 <a id="consult"></a>
@@ -37,7 +37,7 @@ description: "Построить искренние и близкие отнош
 
 Консультации проходят в атмосфере бережного контакта и эмпатии, что позволяет раскрываться и с пониманием относиться к себе самому.
 
-[🌟 Узнать о консультациях](https://t.me/IvanBekNNO)
+[🌟 Узнать о консультациях](https://t.me/IvanBekNNO){:target="_blank" rel="noopener noreferrer"}
 
 <a id="events"></a>
 
@@ -76,7 +76,7 @@ description: "Построить искренние и близкие отнош
 Бот бесплатный для использования, регистрация не нужна.
 Достаточно перейти, и можно отправлять аудиосообщения, они будут перобразовываться в текст, и обрабатываться с помощью ИИ.
 
-[🎭 Перейти к боту: @IB_Empathy_bot](https://t.me/IB_Empathy_bot)
+[🎭 Перейти к боту: @IB_Empathy_bot](https://t.me/IB_Empathy_bot){:target="_blank" rel="noopener noreferrer"}
 
 По вашему запросу я могу кастомезировать (добавить нужный вам функционал) или разработать нового телеграм бота с использованием ИИ под ваши запросы. У меня более 12 лет опыта работы в IT. Если вы психолог, могу разработать вам бота с ИИ под ваши нужды и требования.
 
@@ -92,7 +92,7 @@ description: "Построить искренние и близкие отнош
 
 Подписывайтесь чтобы быть в курсе. Можете подписаться на мой канал в Телеграм, там я также публикую свои посты, анонсы мероприятий, и еще матриалы, которые не всегда появляются на сайте.
 
-[Мой Телеграм-канал](https://t.me/IvanBekRu)
+[Мой Телеграм-канал](https://t.me/IvanBekRu){:target="_blank" rel="noopener noreferrer"}
 
 
 
