@@ -2,6 +2,7 @@
 title: Перенаправление на регистрацию (ближайшее мероприятие в Москве)
 layout: null
 reg_msk_url: "https://ivanbek.timepad.ru/event/3190976/"
+event_type: "demo"
 permalink: /reg-msk/
 published: true
 sitemap:
@@ -12,21 +13,23 @@ sitemap:
   {% assign nearest_event = nil %}
 
   {% for event in site.data.events %}
-    {% assign datetime_parts = event.datetime | split: ' ' %}
-    {% assign date_parts = datetime_parts[0] | split: '.' %}
-    {% assign time_parts = datetime_parts[1] | split: ':' %}
+    {% if event.tipe == page.event_type %}
+      {% assign datetime_parts = event.datetime | split: ' ' %}
+      {% assign date_parts = datetime_parts[0] | split: '.' %}
+      {% assign time_parts = datetime_parts[1] | split: ':' %}
 
-    {% assign year = date_parts[2] %}
-    {% assign month = date_parts[1] %}
-    {% assign day = date_parts[0] %}
-    {% assign hour = time_parts[0] %}
-    {% assign minute = time_parts[1] %}
+      {% assign year = date_parts[2] %}
+      {% assign month = date_parts[1] %}
+      {% assign day = date_parts[0] %}
+      {% assign hour = time_parts[0] %}
+      {% assign minute = time_parts[1] %}
 
-    {% assign formatted_datetime = year | append: '-' | append: month | append: '-' | append: day | append: ' ' | append: hour | append: ':' | append: minute | append: ' +0300' %}
-    {% assign event_time = formatted_datetime | date: '%s' %}
+      {% assign formatted_datetime = year | append: '-' | append: month | append: '-' | append: day | append: ' ' | append: hour | append: ':' | append: minute | append: ' +0300' %}
+      {% assign event_time = formatted_datetime | date: '%s' %}
 
-    {% if event_time >= now and nearest_event == nil %}
-      {% assign nearest_event = event %}
+      {% if event_time >= now and nearest_event == nil %}
+        {% assign nearest_event = event %}
+      {% endif %}
     {% endif %}
   {% endfor %}
 
