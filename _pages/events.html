@@ -17,10 +17,10 @@ published: true
 
 <div>
   {% assign now = site.time | date: '%s' %}
-  
+
   {% assign current_month = '' %}
   {% assign current_year = '' %}
-  
+
   {% for event in site.data.events %}
     {% assign datetime_parts = event.datetime | split: ' ' %}
     {% assign date_parts = datetime_parts[0] | split: '.' %}
@@ -34,7 +34,7 @@ published: true
 
     {% assign formatted_datetime = year | append: '-' | append: month | append: '-' | append: day | append: ' ' | append: hour | append: ':' | append: minute | append: ' +0300' %}
     {% assign event_time = formatted_datetime | date: '%s' %}
-    
+
     {% if event_time >= now %}
       {% if month != current_month or year != current_year %}
         <h3><small>
@@ -58,8 +58,8 @@ published: true
         {% assign current_month = month %}
         {% assign current_year = year %}
       {% endif %}
-      
-      <a href="{{ event.url }}">🌆 {{ day }}.{{ month }} в ⌚ {{ hour }}:{{ minute }} _ {{ event.name }}</a><br>
+
+      <a href="{{ event.url }}">🟢 {{ day }}.{{ month }} в ⌚ {{ hour }}:{{ minute }} _ {{ event.name }}</a><br>
     {% endif %}
   {% endfor %}
 </div>
