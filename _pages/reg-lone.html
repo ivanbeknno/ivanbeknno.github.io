@@ -1,0 +1,61 @@
+---
+title: Перенаправление на регистрацию (ближайший практикум "Одиночество в Большом Городе" в Москве)
+layout: null
+reg_msk_url: "https://ivanbek.timepad.ru/event/3190976/"
+event_type: "lone"
+permalink: /reg-msk/
+published: true
+sitemap:
+  exclude: 'yes'
+---
+
+  {% assign now = site.time | date: '%s' %}
+  {% assign nearest_event = nil %}
+
+  {% for event in site.data.events %}
+    {% if event.tipe == page.event_type %}
+      {% assign datetime_parts = event.datetime | split: ' ' %}
+      {% assign date_parts = datetime_parts[0] | split: '.' %}
+      {% assign time_parts = datetime_parts[1] | split: ':' %}
+
+      {% assign year = date_parts[2] %}
+      {% assign month = date_parts[1] %}
+      {% assign day = date_parts[0] %}
+      {% assign hour = time_parts[0] %}
+      {% assign minute = time_parts[1] %}
+
+      {% assign formatted_datetime = year | append: '-' | append: month | append: '-' | append: day | append: ' ' | append: hour | append: ':' | append: minute | append: ' +0300' %}
+      {% assign event_time = formatted_datetime | date: '%s' %}
+
+      {% if event_time >= now and nearest_event == nil %}
+        {% assign nearest_event = event %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if nearest_event %}
+    {% assign reg_msk_url = nearest_event.url %}
+  {% else %}
+    {% assign reg_msk_url = "#" %}
+  {% endif %}
+
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <!-- Все полезные мета-теги против кэширования -->
+      <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate, max-age=0, private, post-check=0, pre-check=0">
+      <meta http-equiv="pragma" content="no-cache">
+      <meta http-equiv="expires" content="-1">
+      <meta http-equiv="surrogate-control" content="no-store">
+      <meta http-equiv="cache-directive" content="no-cache">
+      <script>
+          location.replace("{{ reg_msk_url }}?" + new Date().getTime());
+      </script>
+      <meta http-equiv="refresh" content="0; {{ reg_msk_url }}">
+      <title>Перенаправление на регистрацию (ближайшее мероприятие в Москве)</title>
+  </head>
+  <body>
+      <p>Перенаправление на страницу регистрации...</p>
+      <p>Если перенаправление не работает, <a href="{{ reg_msk_url }}" id="manual-redirect">нажмите сюда</a>.</p>
+  </body>
+  </html>
