@@ -1,6 +1,6 @@
 ---
 published: true
-title: Перфекционизм и принадлежность
+title: Перфекционизм и принятие
 pseudo: perfectionism-and-affiliation
 date: '2025-06-02'
 layout: post
