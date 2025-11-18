@@ -83,6 +83,14 @@ published: true
 
 ![Отзыв 2](/assets/images/ds-otz-02.png)
 
+### Обо мне
+
+**Психолог.**
+
+Веду блог и телеграм канал: [@IvanBekRu](https://t.me/IvanBekRu)
+
+Моя страничка на b17: [b17.ru/ivanbek/](https://www.b17.ru/ivanbek/)
+
 ### Следующие шаги
 
 **Хотите попасть на практикум?**  
