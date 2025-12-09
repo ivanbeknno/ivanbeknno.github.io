@@ -21,7 +21,19 @@ $text-color: #333;
 // Color scheme for dark modes
 $body-bg-dark: #061725;
 $projectbox-dark: lighten($body-bg-dark, 10%);
-$text-color-dark: #777;
+$text-color-dark: #E3D6BF;
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Lato", "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: bold;
+  line-height: 1.8;
+  margin: 0;
+  text-transform: inherit;
+  
+  @media (prefers-color-scheme: dark) {
+    color: #9A8BA3;  // Заголовки ещё светлее для акцента
+  }
+}
 
 // Colour palette for project boxes
 $theme1: ("one",#388087),("two", #6FB3B8),("three",#BADFE7),("four",#C2EDCE),("five",#F6F6F2);
