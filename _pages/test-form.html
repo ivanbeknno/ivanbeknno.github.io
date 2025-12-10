@@ -9,6 +9,57 @@ sitemap:
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <!-- Вот эта строка делает сайт нормального размера на телефоне. 
+         Она не работала, потому что был сломан тег head -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анкета</title>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FAF7F2;
+            /* Убираем горизонтальную прокрутку */
+            overflow-x: hidden; 
+        }
+        
+        .container {
+            /* Ограничиваем ширину и добавляем отступы по бокам для телефонов */
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px 15px; /* 15px отступы слева и справа */
+            box-sizing: border-box;
+        }
+
+        .yandex-form-container iframe {
+            width: 100% !important;
+            /* min-width: 100% заставляет фрейм растянуться, 
+               но не вылезать за границы экрана */
+            min-width: 100%; 
+            border: none;
+            display: block;
+            /* Минимальная высота, чтобы не схлопывалось */
+            min-height: 800px; 
+        }
+
+        .fallback-link {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 14px;
+            color: #6B5D4D;
+            line-height: 1.5;
+        }
+
+        .fallback-link a {
+            color: #B86B4A;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
 
 <div class="yandex-form-container">
