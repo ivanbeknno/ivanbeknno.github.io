@@ -13,9 +13,10 @@ sitemap:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анкета</title>
     <style>
-        /* Оптимизация прокрутки для мобильных (убирает задержки) */
+        /* Глобальная оптимизация касаний */
         * {
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -24,37 +25,48 @@ sitemap:
             padding: 0;
             background-color: #FAF7F2;
             color: #3D3229;
-            overflow-x: hidden; /* Убирает горизонтальный скролл */
-            -webkit-overflow-scrolling: touch; /* Плавность на iOS */
+            overflow-x: hidden;
+            /* Включаем аппаратное ускорение для всей страницы */
+            -webkit-overflow-scrolling: touch;
         }
         
         .container {
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            padding: 20px 15px; /* Отступы по краям для мобильных */
+            padding: 20px 15px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        /* ОБОЛОЧКА ФОРМЫ - ГЛАВНАЯ ОПТИМИЗАЦИЯ */
         .yandex-form-container {
             width: 100%;
+            /* 1. Изоляция: изменения внутри не заставляют браузер пересчитывать всю страницу */
+            contain: content; 
+            /* 2. Супер-свойство для Android: оптимизирует рендеринг */
+            content-visibility: auto; 
+            /* 3. Примерная высота, чтобы браузер знал место заранее (предотвращает прыжки) */
+            contain-intrinsic-size: 800px;
+            /* 4. Выносим слой на GPU (видеокарту) */
+            will-change: transform, height;
+            transform: translateZ(0);
         }
 
         .yandex-form-container iframe {
             width: 100% !important;
             border: none;
             display: block;
-            /* Важно: touch-action: pan-y разрешает вертикальный скролл поверх карты/формы */
             touch-action: pan-y; 
-            /* Убрали фиксированную высоту, чтобы форма схлопывалась, если заблокирована */
+            /* Если скрипт Яндекса тупит, эта минимальная высота спасет внешний вид */
+            min-height: 400px; 
         }
 
         .fallback-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             padding: 20px;
             font-size: 15px;
             color: #6B5D4D;
@@ -63,6 +75,8 @@ sitemap:
             border-radius: 12px;
             width: 100%;
             box-sizing: border-box;
+            /* Тоже оптимизируем */
+            contain: content;
         }
 
         .fallback-link p {
@@ -72,31 +86,31 @@ sitemap:
         .fallback-link a {
             color: #B86B4A;
             text-decoration: underline;
-            font-weight: 600; /* Сделали чуть жирнее для читаемости */
+            font-weight: 600;
             display: inline-block;
+            padding: 10px; /* Увеличили область клика пальцем */
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Контейнер с формой -->
     <div class="yandex-form-container">
         <script src="https://forms.yandex.ru/_static/embed.js"></script>
         <iframe 
             src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
             frameborder="0" 
             name="ya-form-69389ddb6d2d7307f6c50c5c" 
-            width="100%">
+            width="100%"
+            loading="lazy"> <!-- Добавили ленивую загрузку -->
         </iframe>
     </div>
     
-    <!-- Запасная ссылка (видна всегда, спасает при блокировке) -->
     <div class="fallback-link">
         <p>Не видите форму записи?</p>
         <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank">
-            Подождите 5 секунд или перейдите по этой ссылке &rarr;<br>
-            Открыть анкету в новом окне
+            Подождите загрузку или<br>
+            откройте анкету в новом окне
         </a>
     </div>
 </div>
