@@ -12,9 +12,75 @@ sitemap:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анкета</title>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FAF7F2;
+            color: #3D3229;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px 15px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        /* Стиль чистого iframe без скриптов */
+        iframe.clean-frame {
+            width: 100%;
+            border: none;
+            display: block;
+            /* ЖЕСТКАЯ ВЫСОТА. 
+               Это единственное, что спасет от лагов.
+               80vh = 80% от высоты экрана телефона. */
+            height: 85vh; 
+            min-height: 600px;
+            border-radius: 12px; /* Красота */
+        }
+
+        .fallback-link {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 14px;
+            color: #6B5D4D;
+        }
+        
+        .fallback-link a {
+            color: #B86B4A;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<script src="https://forms.yandex.ru/_static/embed.js"></script><iframe src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" frameborder="0" name="ya-form-69389ddb6d2d7307f6c50c5c" width="650"></iframe>
+
+<div class="container">
+    <!-- 
+       МЫ УДАЛИЛИ ТЕГ <SCRIPT>.
+       Теперь это просто тупое окно, которое не умеет лагать.
+    -->
+    <iframe 
+        class="clean-frame"
+        src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
+        frameborder="0" 
+        name="ya-form-69389ddb6d2d7307f6c50c5c"
+        loading="lazy">
+    </iframe>
+    
+    <div class="fallback-link">
+        <p>Если форма не прогрузилась:</p>
+        <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank">
+            Открыть анкету в новом окне
+        </a>
+    </div>
+</div>
+
 </body>
 </html>
