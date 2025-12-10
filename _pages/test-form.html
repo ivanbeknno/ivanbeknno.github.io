@@ -19,36 +19,34 @@ sitemap:
             padding: 0;
             background-color: #FAF7F2;
             color: #3D3229;
+            /* Улучшает производительность отрисовки */
+            -webkit-font-smoothing: antialiased; 
         }
         
         .container {
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            padding: 20px 15px;
+            padding: 0; /* Убрал отступы, чтобы не мешали */
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        /* Стиль чистого iframe без скриптов */
+        /* Стиль для iframe */
         iframe.clean-frame {
             width: 100%;
             border: none;
             display: block;
-            /* ЖЕСТКАЯ ВЫСОТА. 
-               Это единственное, что спасет от лагов.
-               80vh = 80% от высоты экрана телефона. */
-            height: 85vh; 
-            min-height: 600px;
-            border-radius: 12px; /* Красота */
+            /* ГЛАВНОЕ: Жесткая высота больше чем сама форма. 
+               2500px должно хватить. Если форма обрезается снизу - увеличьте это число.
+               Если слишком много пустого места - уменьшите. */
+            height: 2500px; 
+            overflow: hidden; /* Запрещаем скролл внутри фрейма */
         }
 
         .fallback-link {
             text-align: center;
-            margin-top: 20px;
-            padding: 15px;
+            padding: 20px;
+            background: #FAF7F2;
             font-size: 14px;
             color: #6B5D4D;
         }
@@ -63,21 +61,22 @@ sitemap:
 
 <div class="container">
     <!-- 
-       МЫ УДАЛИЛИ ТЕГ <SCRIPT>.
-       Теперь это просто тупое окно, которое не умеет лагать.
+       scrolling="no" - Важный параметр. 
+       Он говорит телефону: "Не пытайся скроллить внутри этого окна, скролль всю страницу".
+       Это убирает "затыки".
     -->
     <iframe 
         class="clean-frame"
         src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
         frameborder="0" 
-        name="ya-form-69389ddb6d2d7307f6c50c5c"
-        loading="lazy">
+        scrolling="no"
+        name="ya-form-69389ddb6d2d7307f6c50c5c">
     </iframe>
     
     <div class="fallback-link">
-        <p>Если форма не прогрузилась:</p>
+        <p>Если в форме выше что-то не работает:</p>
         <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank">
-            Открыть анкету в новом окне
+            Заполнить анкету в отдельном окне
         </a>
     </div>
 </div>
