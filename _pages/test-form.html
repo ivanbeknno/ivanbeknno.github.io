@@ -13,70 +13,104 @@ sitemap:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анкета</title>
     <style>
+        /* Глобальная оптимизация касаний */
+        * {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             font-family: 'DM Sans', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #FAF7F2;
             color: #3D3229;
-            /* Улучшает производительность отрисовки */
-            -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden;
+            /* Включаем аппаратное ускорение для всей страницы */
+            -webkit-overflow-scrolling: touch;
         }
         
         .container {
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            padding: 0; /* Убрал отступы, чтобы не мешали */
+            padding: 20px 15px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        /* Стиль для iframe */
-        iframe.clean-frame {
+        /* ОБОЛОЧКА ФОРМЫ - ГЛАВНАЯ ОПТИМИЗАЦИЯ */
+        .yandex-form-container {
             width: 100%;
+            /* 1. Изоляция: изменения внутри не заставляют браузер пересчитывать всю страницу */
+            contain: content; 
+            /* 2. Супер-свойство для Android: оптимизирует рендеринг */
+            content-visibility: auto; 
+            /* 3. Примерная высота, чтобы браузер знал место заранее (предотвращает прыжки) */
+            contain-intrinsic-size: 800px;
+            /* 4. Выносим слой на GPU (видеокарту) */
+            will-change: transform, height;
+            transform: translateZ(0);
+        }
+
+        .yandex-form-container iframe {
+            width: 100% !important;
             border: none;
             display: block;
-            /* ГЛАВНОЕ: Жесткая высота больше чем сама форма. 
-               2500px должно хватить. Если форма обрезается снизу - увеличьте это число.
-               Если слишком много пустого места - уменьшите. */
-            height: 2500px; 
-            overflow: hidden; /* Запрещаем скролл внутри фрейма */
+            touch-action: pan-y; 
+            /* Если скрипт Яндекса тупит, эта минимальная высота спасет внешний вид */
+            min-height: 400px; 
         }
 
         .fallback-link {
             text-align: center;
+            margin-top: 30px;
             padding: 20px;
-            background: #FAF7F2;
-            font-size: 14px;
+            font-size: 15px;
             color: #6B5D4D;
+            line-height: 1.6;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            /* Тоже оптимизируем */
+            contain: content;
         }
-        
+
+        .fallback-link p {
+            margin: 0 0 10px 0;
+        }
+
         .fallback-link a {
             color: #B86B4A;
             text-decoration: underline;
+            font-weight: 600;
+            display: inline-block;
+            padding: 10px; /* Увеличили область клика пальцем */
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- 
-       scrolling="no" - Важный параметр. 
-       Он говорит телефону: "Не пытайся скроллить внутри этого окна, скролль всю страницу".
-       Это убирает "затыки".
-    -->
-    <iframe 
-        class="clean-frame"
-        src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
-        frameborder="0" 
-        scrolling="no"
-        name="ya-form-69389ddb6d2d7307f6c50c5c">
-    </iframe>
+    <div class="yandex-form-container">
+        <script src="https://forms.yandex.ru/_static/embed.js"></script>
+        <iframe 
+            src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
+            frameborder="0" 
+            name="ya-form-69389ddb6d2d7307f6c50c5c" 
+            width="100%"
+            loading="lazy"> <!-- Добавили ленивую загрузку -->
+        </iframe>
+    </div>
     
     <div class="fallback-link">
-        <p>Если в форме выше что-то не работает:</p>
+        <p>Не видите форму записи?</p>
         <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank">
-            Заполнить анкету в отдельном окне
+            Подождите загрузку или<br>
+            откройте анкету в новом окне
         </a>
     </div>
 </div>
