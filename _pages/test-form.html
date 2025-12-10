@@ -10,86 +10,95 @@ sitemap:
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <!-- Вот эта строка делает сайт нормального размера на телефоне. 
-         Она не работала, потому что был сломан тег head -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Анкета</title>
     <style>
+        /* Оптимизация прокрутки для мобильных (убирает задержки) */
+        * {
+            touch-action: manipulation;
+        }
+
         body {
             font-family: 'DM Sans', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #FAF7F2;
-            /* Убираем горизонтальную прокрутку */
-            overflow-x: hidden; 
+            color: #3D3229;
+            overflow-x: hidden; /* Убирает горизонтальный скролл */
+            -webkit-overflow-scrolling: touch; /* Плавность на iOS */
         }
         
         .container {
-            /* Ограничиваем ширину и добавляем отступы по бокам для телефонов */
             width: 100%;
             max-width: 650px;
             margin: 0 auto;
-            padding: 20px 15px; /* 15px отступы слева и справа */
+            padding: 20px 15px; /* Отступы по краям для мобильных */
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .yandex-form-container {
+            width: 100%;
         }
 
         .yandex-form-container iframe {
             width: 100% !important;
-            /* min-width: 100% заставляет фрейм растянуться, 
-               но не вылезать за границы экрана */
-            min-width: 100%; 
             border: none;
             display: block;
-            /* Минимальная высота, чтобы не схлопывалось */
-            min-height: 80px; 
+            /* Важно: touch-action: pan-y разрешает вертикальный скролл поверх карты/формы */
+            touch-action: pan-y; 
+            /* Убрали фиксированную высоту, чтобы форма схлопывалась, если заблокирована */
         }
 
         .fallback-link {
             text-align: center;
             margin-top: 20px;
-            padding: 15px;
-            font-size: 14px;
+            padding: 20px;
+            font-size: 15px;
             color: #6B5D4D;
-            line-height: 1.5;
+            line-height: 1.6;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .fallback-link p {
+            margin: 0 0 10px 0;
         }
 
         .fallback-link a {
             color: #B86B4A;
             text-decoration: underline;
-            font-weight: bold;
+            font-weight: 600; /* Сделали чуть жирнее для читаемости */
+            display: inline-block;
         }
     </style>
 </head>
 <body>
 
-<div class="yandex-form-container">
-    <script src="https://forms.yandex.ru/_static/embed.js"></script>
-    <iframe 
-        src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
-        frameborder="0" 
-        name="ya-form-69389ddb6d2d7307f6c50c5c" 
-        width="100%">
-    </iframe>
-</div>
-
-<style>
-    /* Добавьте это в ваш блок <style> или здесь же */
-    .yandex-form-container {
-        width: 100%;
-        max-width: 650px; /* Максимальная ширина как вы хотели */
-        margin: 0 auto;   /* Центрирование */
-        padding: 20px 0;
-    }
+<div class="container">
+    <!-- Контейнер с формой -->
+    <div class="yandex-form-container">
+        <script src="https://forms.yandex.ru/_static/embed.js"></script>
+        <iframe 
+            src="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c?iframe=1" 
+            frameborder="0" 
+            name="ya-form-69389ddb6d2d7307f6c50c5c" 
+            width="100%">
+        </iframe>
+    </div>
     
-    .yandex-form-container iframe {
-        width: 100% !important; /* Важно для мобильных устройств */
-        display: block;
-    }
-</style>
-    
-<div style="text-align: center; margin-top: 15px; font-size: 15px; color: #6B5D4D;">
-    <p>Не видите форму записи?</p>
-    <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank" style="color: #B86B4A; text-decoration: underline;"> Подождиет 5 секунд или перейдите по этой сслыке -> Открыть анкету в новом окне</a>
+    <!-- Запасная ссылка (видна всегда, спасает при блокировке) -->
+    <div class="fallback-link">
+        <p>Не видите форму записи?</p>
+        <a href="https://forms.yandex.ru/u/69389ddb6d2d7307f6c50c5c/" target="_blank">
+            Подождите 5 секунд или перейдите по этой ссылке &rarr;<br>
+            Открыть анкету в новом окне
+        </a>
+    </div>
 </div>
 
 </body>
