@@ -1,0 +1,549 @@
+---
+title: Форма для заполнения
+layout: null
+permalink: /form/
+published: true
+sitemap:
+  exclude: 'yes'
+---
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Загрузка формы...</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <style>
+/* Custom styles */
+
+body {
+  padding: 2rem 0;
+}
+
+#form-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Form styling */
+#dynamic-form h1,
+#dynamic-form h2,
+#dynamic-form h3,
+#dynamic-form h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+#dynamic-form h3:first-child {
+  margin-top: 0;
+}
+
+#dynamic-form p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+/* Field styling */
+#dynamic-form label:not(:has(input[type="checkbox"])) {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+#dynamic-form input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+#dynamic-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Field indicator (exclude submit button) */
+#dynamic-form input:not([type="submit"]):not([type="button"]),
+#dynamic-form textarea {
+  border-left: 3px solid var(--primary);
+}
+
+/* Required field asterisk */
+#dynamic-form .required-field {
+  position: relative;
+}
+
+#dynamic-form .required-field::before {
+  content: "*";
+  color: var(--del-color, #d32752);
+  font-weight: bold;
+  position: absolute;
+  left: -0.75rem;
+  top: -0.65rem;
+  font-size: 1.2rem;
+}
+
+/* Success message */
+#success-message {
+  margin-top: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--card-background-color);
+  border: 1px solid var(--primary);
+  border-radius: var(--border-radius);
+  animation: slideIn 0.3s ease-out;
+}
+
+#success-message h2 {
+  color: var(--primary);
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+}
+
+#success-message p {
+  color: var(--color);
+  margin: 0.5rem 0;
+}
+
+#success-message p:last-child {
+  margin-top: 2rem;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Error message */
+#error-message,
+.error-message {
+  margin-top: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--card-background-color);
+  border: 1px solid var(--del-color, #d32752);
+  border-radius: var(--border-radius);
+  animation: slideIn 0.3s ease-out;
+}
+
+#error-message h2,
+.error-message h2 {
+  color: var(--del-color, #d32752);
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+}
+
+#error-message p,
+.error-message p {
+  color: var(--color);
+  margin: 0.5rem 0;
+}
+
+  </style>
+</head>
+<body>
+  <main class="container">
+    <article>
+      <div id="form-container">
+        <p>Загрузка формы...</p>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    window.FORM_CONFIG = {
+      apiEndpoint: 'https://d5df0q3il4eih5rnrh48.g3ab4gln.apigw.yandexcloud.net/random',
+      apiFormEndpoint: 'https://d5dv2gomtpi1q7nii25v.o2p3jdjj.apigw.yandexcloud.net/getForm',
+      slug: null,
+      formHash: null,  // берётся из URL ?f=hash
+      title: null  // загружается из API вместе с формой
+    };
+  </script>
+  <script>
+/**
+ * Markdown Form Client
+ * Supports both dynamic (API-loaded) and static (pre-rendered) modes
+ */
+
+// Configuration from window.FORM_CONFIG or defaults
+const CONFIG = window.FORM_CONFIG || {};
+const API_ENDPOINT = CONFIG.apiEndpoint || '';
+const API_FORM_ENDPOINT = CONFIG.apiFormEndpoint || '';
+const FORM_SLUG = CONFIG.slug || null;
+const FORM_HASH = CONFIG.formHash || null;
+const FORM_TITLE = CONFIG.title || null;
+
+let formData = null;
+
+/**
+ * Initialize on page load
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+  // Check if form is pre-rendered (static mode)
+  const existingForm = document.getElementById('dynamic-form');
+  if (existingForm) {
+    // Static mode: form already rendered, just attach submit handler
+    initStaticForm(existingForm);
+    return;
+  }
+
+  // Dynamic mode: load form from API
+  // Priority: 1) FORM_HASH from config, 2) URL ?f= param, 3) URL path /form/:slug
+  const formHash = FORM_HASH || getFormHashFromUrl();
+  const slug = FORM_SLUG || getSlugFromUrl();
+
+  try {
+    if (formHash && API_FORM_ENDPOINT) {
+      // Dynamic Static mode: load by hash from separate endpoint
+      await loadFormByHash(formHash);
+    } else if (slug) {
+      // Full-stack mode: load by slug
+      await loadForm(slug);
+    } else {
+      showError('Форма не указана');
+    }
+  } catch (error) {
+    showError(error.message);
+  }
+});
+
+/**
+ * Initialize pre-rendered static form
+ */
+function initStaticForm(form) {
+  // Create success message container if not exists
+  let successMessage = document.getElementById('success-message');
+  if (!successMessage) {
+    successMessage = document.createElement('div');
+    successMessage.id = 'success-message';
+    successMessage.style.display = 'none';
+    form.parentNode.appendChild(successMessage);
+  }
+
+  // Attach submit handler
+  form.addEventListener('submit', handleSubmit);
+}
+
+/**
+ * Extract slug from URL
+ */
+function getSlugFromUrl() {
+  const path = window.location.pathname;
+  const match = path.match(/\/form\/([^\/]+)/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Extract form hash from URL query parameter
+ */
+function getFormHashFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('f');
+}
+
+/**
+ * Get current slug (from config or URL)
+ */
+function getSlug() {
+  return FORM_SLUG || getSlugFromUrl();
+}
+
+/**
+ * Load form data from API by slug
+ */
+async function loadForm(slug) {
+  const response = await fetch(`${API_ENDPOINT}/api/form/${slug}`);
+
+  if (!response.ok) {
+    if (response.status === 403) {
+      throw new Error('Форма не найдена');
+    }
+    throw new Error('Ошибка загрузки формы');
+  }
+
+  formData = await response.json();
+  renderForm(formData);
+}
+
+/**
+ * Load form data from API by hash (Dynamic Static mode)
+ */
+async function loadFormByHash(hash) {
+  const url = `${API_FORM_ENDPOINT}?f=${hash}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    // Try to parse error response JSON
+    try {
+      const errorData = await response.json();
+      if (errorData.error && errorData.hash) {
+        // Show error with hash
+        showError(errorData.error, errorData.hash);
+        return;
+      }
+    } catch (e) {
+      // JSON parse failed, use generic error
+    }
+
+    if (response.status === 404) {
+      throw new Error('Форма не найдена');
+    }
+    throw new Error('Ошибка загрузки формы');
+  }
+
+  formData = await response.json();
+  renderForm(formData);
+}
+
+/**
+ * Render form elements
+ */
+function renderForm(data) {
+  const container = document.getElementById('form-container');
+  container.innerHTML = '';
+
+  // Update page title
+  document.title = data.title || 'Форма';
+
+  // Create form element
+  const form = document.createElement('form');
+  form.id = 'dynamic-form';
+  form.noValidate = false;
+
+  // Render elements
+  data.elements.forEach(element => {
+    if (element.type === 'html') {
+      const div = document.createElement('div');
+      div.innerHTML = element.content;
+      form.appendChild(div);
+    } else if (element.type === 'field') {
+      form.appendChild(createField(element));
+    }
+  });
+
+  // Submit button
+  const submitButton = document.createElement('button');
+  submitButton.type = 'submit';
+  submitButton.textContent = 'Отправить';
+  submitButton.style.marginTop = '2rem';
+  form.appendChild(submitButton);
+
+  // Form submit handler
+  form.addEventListener('submit', handleSubmit);
+
+  container.appendChild(form);
+
+  // Success message (appended to container, not form, so it remains visible when form is hidden)
+  const successMessage = document.createElement('div');
+  successMessage.id = 'success-message';
+  successMessage.style.display = 'none';
+  container.appendChild(successMessage);
+}
+
+/**
+ * Create form field
+ */
+function createField(field) {
+  const container = document.createElement('div');
+  container.style.marginBottom = '1rem';
+
+  // Add required class for asterisk indicator
+  if (field.required) {
+    container.classList.add('required-field');
+  }
+
+  let input;
+
+  switch (field.fieldType) {
+    case 'textarea':
+      input = document.createElement('textarea');
+      input.rows = 5;
+      break;
+
+    case 'checkbox':
+      const label = document.createElement('label');
+      input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = field.name;
+      input.id = field.name;
+      input.required = field.required;
+      label.appendChild(input);
+      if (field.placeholder) {
+        label.appendChild(document.createTextNode(field.placeholder));
+      }
+      container.appendChild(label);
+      return container;
+
+    case 'date':
+      input = document.createElement('input');
+      input.type = 'date';
+      // Set Monday as first day of week
+      input.setAttribute('data-week-start', '1');
+      break;
+
+    case 'email':
+      input = document.createElement('input');
+      input.type = 'email';
+      break;
+
+    case 'phone':
+      input = document.createElement('input');
+      input.type = 'tel';
+      break;
+
+    case 'number':
+      input = document.createElement('input');
+      input.type = 'number';
+      break;
+
+    default:
+      input = document.createElement('input');
+      input.type = 'text';
+  }
+
+  input.name = field.name;
+  input.id = field.name;
+  input.required = field.required;
+
+  if (field.placeholder && field.fieldType !== 'checkbox') {
+    input.placeholder = field.placeholder;
+  }
+
+  container.appendChild(input);
+
+  return container;
+}
+
+/**
+ * Handle form submission
+ */
+async function handleSubmit(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const successMessage = document.getElementById('success-message');
+
+  // Collect form data
+  const data = {};
+  const elements = form.elements;
+
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    if (element.name) {
+      if (element.type === 'checkbox') {
+        data[element.name] = element.checked;
+      } else {
+        data[element.name] = element.value;
+      }
+    }
+  }
+
+  // Add metadata
+  const slug = getSlug();
+  data._slug = slug;
+  data._timestamp = new Date().toISOString();
+
+  // Add form hash if available (for tracking which form version was used)
+  if (FORM_HASH) {
+    data._formHash = FORM_HASH;
+  }
+
+  // Add form title if available (for display in notifications)
+  const title = FORM_TITLE || (formData && formData.title);
+  if (title) {
+    data._title = title;
+  }
+
+  // Validate date fields (only in dynamic mode where formData is available)
+  if (formData) {
+    for (const key in data) {
+      const field = formData.elements.find(el => el.name === key);
+      if (field && field.fieldType === 'date' && data[key]) {
+        if (!isValidDate(data[key])) {
+          alert(`Некорректная дата в поле "${field.placeholder || key}"`);
+          return;
+        }
+      }
+    }
+  }
+
+  // Disable submit button
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправка...';
+
+  try {
+    // Build submit URL:
+    // - If API_ENDPOINT is set, use it directly (serverless mode - full URL)
+    // - If empty, use relative path (full-stack mode)
+    const submitUrl = API_ENDPOINT || `/api/form/${slug}/submit`;
+
+    const response = await fetch(submitUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Ошибка отправки');
+    }
+
+    // Hide form
+    form.style.display = 'none';
+
+    // Show success message
+    const responseId = result.filename ? result.filename.replace('.md', '') : result.id || data._timestamp;
+    successMessage.innerHTML = `
+      <h2>✓ Ваши ответы сохранены</h2>
+      <p>ID: ${responseId}</p>
+      <p>Спасибо за уделенное время!</p>
+      <p>Можете закрыть эту страницу</p>
+    `;
+    successMessage.style.display = 'block';
+
+    // Scroll to success message
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (error) {
+    alert(`Ошибка: ${error.message}`);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = 'Отправить';
+  }
+}
+
+/**
+ * Validate date
+ */
+function isValidDate(dateString) {
+  const date = new Date(dateString);
+  return date instanceof Date && !isNaN(date);
+}
+
+/**
+ * Show error message
+ */
+function showError(message, hash = null) {
+  const container = document.getElementById('form-container');
+  const hashInfo = hash ? `<p><small>Хэш: ${hash}</small></p>` : '';
+  container.innerHTML = `
+    <div class="error-message">
+      <h2>Ошибка</h2>
+      <p>${message}</p>
+      ${hashInfo}
+    </div>
+  `;
+}
+
+  </script>
+</body>
+</html>
