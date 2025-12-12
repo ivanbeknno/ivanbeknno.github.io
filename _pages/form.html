@@ -156,13 +156,7 @@ body {
   </main>
 
   <script>
-    window.FORM_CONFIG = {
-      apiEndpoint: 'https://d5df0q3il4eih5rnrh48.g3ab4gln.apigw.yandexcloud.net/random',
-      apiFormEndpoint: 'https://d5dv2gomtpi1q7nii25v.o2p3jdjj.apigw.yandexcloud.net/getForm',
-      slug: null,
-      formHash: null,  // берётся из URL ?f=hash
-      title: null  // загружается из API вместе с формой
-    };
+    window.FORM_CONFIG = {"apiEndpoint":"https://d5df0q3il4eih5rnrh48.g3ab4gln.apigw.yandexcloud.net/random","apiFormEndpoint":"https://d5dv2gomtpi1q7nii25v.o2p3jdjj.apigw.yandexcloud.net/getForm","slug":null,"formHash":null,"title":null};
   </script>
   <script>
 /**
@@ -319,7 +313,7 @@ function renderForm(data) {
   data.elements.forEach(element => {
     if (element.type === 'html') {
       const div = document.createElement('div');
-      div.innerHTML = element.content;
+      div.innerHTML = sanitizeHtml(element.content);
       form.appendChild(div);
     } else if (element.type === 'field') {
       form.appendChild(createField(element));
@@ -532,15 +526,75 @@ function isValidDate(dateString) {
 }
 
 /**
+ * Escape HTML special characters to prevent XSS
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
+ * Sanitize HTML using whitelist of allowed tags
+ * Prevents XSS by removing scripts and dangerous attributes
+ */
+function sanitizeHtml(html) {
+  if (!html) return '';
+
+  // Whitelist of allowed tags from markdown
+  const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol', 'li',
+                       'strong', 'b', 'em', 'i', 'a', 'br', 'code', 'pre', 'blockquote'];
+
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+
+  // Recursively clean nodes
+  function cleanNode(node) {
+    // Remove if not allowed tag
+    if (node.nodeType === 1) { // Element node
+      const tagName = node.tagName.toLowerCase();
+      if (!allowedTags.includes(tagName)) {
+        node.remove();
+        return;
+      }
+
+      // Remove all attributes except href for links
+      const attrs = Array.from(node.attributes);
+      attrs.forEach(attr => {
+        if (!(tagName === 'a' && attr.name === 'href')) {
+          node.removeAttribute(attr.name);
+        }
+      });
+
+      // For links, sanitize href to prevent javascript: protocol
+      if (tagName === 'a') {
+        const href = node.getAttribute('href');
+        if (href && (href.trim().toLowerCase().startsWith('javascript:') ||
+                     href.trim().toLowerCase().startsWith('data:'))) {
+          node.removeAttribute('href');
+        }
+      }
+    }
+
+    // Process children
+    Array.from(node.childNodes).forEach(child => cleanNode(child));
+  }
+
+  cleanNode(temp);
+  return temp.innerHTML;
+}
+
+/**
  * Show error message
  */
 function showError(message, hash = null) {
   const container = document.getElementById('form-container');
-  const hashInfo = hash ? `<p><small>Хэш: ${hash}</small></p>` : '';
+  const hashInfo = hash ? `<p><small>Хэш: ${escapeHtml(hash)}</small></p>` : '';
   container.innerHTML = `
     <div class="error-message">
       <h2>Ошибка</h2>
-      <p>${message}</p>
+      <p>${escapeHtml(message)}</p>
       ${hashInfo}
     </div>
   `;
