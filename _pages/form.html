@@ -445,13 +445,15 @@ async function handleSubmit(event) {
   }
 
   // Add metadata
-  const slug = getSlug();
+  // Use formData values as fallback when FORM_CONFIG is not pre-filled (dynamic mode)
+  const slug = getSlug() || (formData && formData.slug);
   data._slug = slug;
   data._timestamp = new Date().toISOString();
 
   // Add form hash if available (for tracking which form version was used)
-  if (FORM_HASH) {
-    data._formHash = FORM_HASH;
+  const formHash = FORM_HASH || (formData && formData.formHash);
+  if (formHash) {
+    data._formHash = formHash;
   }
 
   // Add form title if available (for display in notifications)
