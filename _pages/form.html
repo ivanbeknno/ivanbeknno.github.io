@@ -500,7 +500,7 @@ async function handleSubmit(event) {
     const responseId = result.filename ? result.filename.replace('.md', '') : result.id || data._timestamp;
     successMessage.innerHTML = `
       <h2>✓ Ваши ответы сохранены</h2>
-      <p>ID: ${responseId}</p>
+      <p>ID: ${escapeHtml(String(responseId))}</p>
       <p>Спасибо за уделенное время!</p>
       <p>Можете закрыть эту страницу</p>
     `;
@@ -542,39 +542,64 @@ function escapeHtml(str) {
 function sanitizeHtml(html) {
   if (!html) return '';
 
-  // Whitelist of allowed tags from markdown
-  const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol', 'li',
-                       'strong', 'b', 'em', 'i', 'a', 'br', 'code', 'pre', 'blockquote'];
+  // Whitelist of allowed tags that marked.js can generate from pure markdown
+  // SYNC NOTE: If marked.js is upgraded, verify this list matches its output
+  const allowedTags = [
+    // Headings and paragraphs
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p',
+    // Lists
+    'ul', 'ol', 'li',
+    // Inline formatting
+    'strong', 'b', 'em', 'i', 'del', 'code',
+    // Links and images
+    'a', 'img',
+    // Block elements
+    'br', 'hr', 'pre', 'blockquote',
+    // Tables (GFM extension)
+    'table', 'thead', 'tbody', 'tr', 'th', 'td'
+  ];
 
   const temp = document.createElement('div');
   temp.innerHTML = html;
 
   // Recursively clean nodes
   function cleanNode(node) {
-    // Remove if not allowed tag
     if (node.nodeType === 1) { // Element node
       const tagName = node.tagName.toLowerCase();
       if (!allowedTags.includes(tagName)) {
+        // Security: Remove entire node INCLUDING all children.
+        // This prevents content from dangerous tags like <script> from leaking.
+        // Intentionally does NOT preserve child text nodes for safety.
         node.remove();
         return;
       }
 
-      // Remove all attributes except href for links
+      // Whitelist of allowed attributes per tag
+      const allowedAttrs = {
+        'a': ['href'],
+        'img': ['src', 'alt']
+      };
+
+      // Remove all attributes except whitelisted ones
       const attrs = Array.from(node.attributes);
+      const tagAllowedAttrs = allowedAttrs[tagName] || [];
       attrs.forEach(attr => {
-        if (!(tagName === 'a' && attr.name === 'href')) {
+        if (!tagAllowedAttrs.includes(attr.name)) {
           node.removeAttribute(attr.name);
         }
       });
 
-      // For links, sanitize href to prevent javascript: protocol
-      if (tagName === 'a') {
-        const href = node.getAttribute('href');
-        if (href && (href.trim().toLowerCase().startsWith('javascript:') ||
-                     href.trim().toLowerCase().startsWith('data:'))) {
-          node.removeAttribute('href');
+      // Sanitize URL attributes to prevent javascript:/data: protocols
+      const urlAttrs = ['href', 'src'];
+      urlAttrs.forEach(attrName => {
+        const value = node.getAttribute(attrName);
+        if (value) {
+          const trimmed = value.trim().toLowerCase();
+          if (trimmed.startsWith('javascript:') || trimmed.startsWith('data:')) {
+            node.removeAttribute(attrName);
+          }
         }
-      }
+      });
     }
 
     // Process children
