@@ -13,3 +13,4 @@ __new-posts/queue
 *.py
 /__new-posts/
 /test.html
+.venv/

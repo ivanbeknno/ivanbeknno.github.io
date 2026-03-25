@@ -111,11 +111,11 @@ sitemap:
 document.addEventListener('click', function(e) {
   // Проверяем, является ли цель клика якорной ссылкой
   const target = e.target.closest('a[href*="#"]');
-  
+
   if (target) {
     // Получаем целевой элемент
     const href = target.getAttribute('href');
-    
+
     // Только для внутренних якорей (начинающихся с # или имеющих # внутри локального URL)
     if (href.startsWith('#') || (href.includes('#') && !href.includes('://'))) {
       // Запускаем таймер для удаления хэша после прокрутки

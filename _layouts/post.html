@@ -32,6 +32,32 @@ layout: default
 <p><small>🧲 Подписаться на новые посты: <a href="https://t.me/IvanBekRu" target="_blank" rel="noopener noreferrer"> 📱 В телеграм канале</a>  или
   <a href="{{site.baseurl}}/feed.atom" title="{{site.baseurl}}/feed.atom" >Atom</a></small></p>
 
+<style>
+.email-subscribe-form{margin:16px auto 4px;max-width:420px;display:flex;gap:8px;align-items:center;justify-content:center}
+.email-subscribe-form input[type="text"]{font:0.9rem/1 sans-serif;padding:9px 14px;border:1px solid #c1c9cb;border-radius:6px;background:#fff;color:#333;flex:1;min-width:0;outline:none;transition:border-color .2s}
+.email-subscribe-form input[type="text"]:focus{border-color:var(--esf-link);box-shadow:0 0 0 2px rgba(0,0,0,.1)}
+.email-subscribe-form button{font:600 0.85rem/1 sans-serif;padding:9px 18px;border:none;border-radius:6px;background:var(--esf-link-dark);color:#fff;cursor:pointer;white-space:nowrap;transition:opacity .2s}
+.email-subscribe-form button:hover{opacity:.85}
+.email-subscribe-label{font:0.82rem/1.4 sans-serif;color:inherit;opacity:.65;text-align:center;margin-top:2px}
+@media(max-width:480px){.email-subscribe-form{flex-direction:column}.email-subscribe-form input[type="text"],.email-subscribe-form button{width:100%}}
+</style>
+<script>
+(function(){var a=document.querySelector('a[href]');if(a){var c=getComputedStyle(a).color;var r=document.documentElement.style;r.setProperty('--esf-link',c);var m=c.match(/\d+/g);if(m){r.setProperty('--esf-link-dark','rgb('+m.slice(0,3).map(function(v){return Math.round(v*.75)}).join(',')+')')}}})();
+</script>
+
+<form class="email-subscribe-form"
+      method="POST"
+      action="https://cp.unisender.com/ru/subscribe?hash=6m95c58h3jzk8f94dp6yn1btuxetiff4psyf6hjzqukgx3hdz8qzy"
+      name="subscribtion_form">
+  <input type="text" name="email" placeholder="Ваш email" required>
+  <button type="submit">✉️ Подписаться</button>
+  <input type="hidden" name="charset" value="UTF-8">
+  <input type="hidden" name="default_list_id" value="4">
+  <input type="hidden" name="overwrite" value="2">
+  <input type="hidden" name="is_v5" value="1">
+</form>
+<div class="email-subscribe-label">или подпишитесь по email — без спама, только новые посты</div>
+
 <p><small> Если вам нравятся мои посты, и вы хотите помочь мне сделать блог лучше,
   <br> 📝напишите мне
   <b><a href="https://docs.google.com/forms/d/e/1FAIpQLSewVqwvSpXbR_aBf43fW9dMtb_tkTm8eW90JSv0cXazK0a_FQ/viewform?usp=pp_url&entry.1173564305={{ page.url | url_encode }}">
